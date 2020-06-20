@@ -1,14 +1,23 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import { findByTestAttr } from '../test/testUtils';
 import App from './App';
 
+import hooksActions from './actions/hooksActions';
+
+const mockGetSecretWord = jest.fn();
+
 /**
  * Setup function for App component
- * @returns {shallowWrapper}
+ * @returns {ReactWrapper}
  */
 const setup = () => {
-  return shallow(<App />);
+  mockGetSecretWord.mockClear();
+  hooksActions.getSecretWord = mockGetSecretWord;
+
+  // use mount because useEffect not called on 'shallow'
+  // https://github.com/enzymejs/enzyme/issues/2086
+  return mount(<App />);
 }
 
 test('renders app without error', () => {
@@ -16,3 +25,23 @@ test('renders app without error', () => {
   const component = findByTestAttr(wrapper, 'component-app');
   expect(component.length).toBe(1);
 });
+
+describe('getSecretWord calls', () => {
+  test('getSecretWord gets called on App mount', () => {
+    setup();
+
+    // check to see if secret word was updated
+    expect(mockGetSecretWord).toHaveBeenCalled();
+  });
+
+  test('secretWord does not update on App update', () =>{
+    const wrapper = setup();
+    mockGetSecretWord.mockClear();
+
+    // wrapper.update() does not trigger update
+    // issue forked from https://github.com/enzymejs/enzyme/issues/2091
+    wrapper.setProps();
+    expect(mockGetSecretWord).not.toHaveBeenCalled();
+
+  })
+})

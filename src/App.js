@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import hooksActions from './actions/hooksActions';
+import Input from './Input';
 
 /**
  * 
@@ -26,12 +27,22 @@ function App() {
   }
 
   React.useEffect(() => { 
-    hooksActions.getSecretWord(setSecretWord) 
-    },[]
-  )
+     hooksActions.getSecretWord(setSecretWord) 
+  }, []);
+
+  if (!state.secretWord) {
+    return (
+      <div className="container" data-test="spinner">
+        <div className="spinner-border" role="status">
+          <p>Loading secret word...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div data-test="component-app">
+    <div className="container" data-test="component-app">
+      <Input secretWord={state.secretWord} />
     </div>
   );
 }

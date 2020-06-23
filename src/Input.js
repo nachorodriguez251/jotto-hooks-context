@@ -1,10 +1,16 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { string } from 'prop-types'
+
+import languageConext from './contexts/languageContext';
+import stringsModule from './helpers/strings';
 
 function Input({ secretWord }) {
   // in order to mock the Hook, we need to do React.useState instead of destructuring
   // the hook in the import and just use useState
   const [currentGuess, setCurrentGuess] = React.useState("");
+  
+  const language = React.useContext(languageConext);
+  
   return (
     <div data-test="component-input">
       <form className="form-inline">
@@ -12,7 +18,7 @@ function Input({ secretWord }) {
           data-test="input-box"
           className="mb-2 mx-sm-3"
           type="text"
-          placeholder="Enter guess"
+          placeholder={stringsModule.getStringByLanguage(language, 'guessInputPlaceholder')}
           value={currentGuess}
           onChange={(event) => setCurrentGuess(event.target.value)}
         />
@@ -24,7 +30,7 @@ function Input({ secretWord }) {
             // TODO: update guessedWord
             // TODO: check against secretWord and update success if needed
             setCurrentGuess(currentGuess)}}>
-           Submit    
+           { stringsModule.getStringByLanguage(language, 'submit') }    
         </button>
       </form>
     </div>

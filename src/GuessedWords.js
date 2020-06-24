@@ -1,20 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import stringsModule from './helpers/strings';
+import guessedWordsContext from './contexts/guessedWordsContext';
 import languageContext from './contexts/languageContext';
+import stringsModule from './helpers/strings';
 
-const GuessedWords = (props) => {
-  let contents;
+const GuessedWords = () => {
+  const [guessedWords] = guessedWordsContext.useGuessedWords();
   const language = React.useContext(languageContext);
-  if (props.guessedWords.length === 0) {
+  let contents
+  if (guessedWords.length === 0) {
     contents = (
       <span data-test="guess-instructions">
-        { stringsModule.getStringByLanguage(language, 'guessPrompt') }
+        {stringsModule.getStringByLanguage(language, 'guessPrompt')}
       </span>
     );
   } else {
-    const guessedWordsRows = props.guessedWords.map((word, index) => (
+    const guessedWordsRows = guessedWords.map((word, index) => (
       <tr data-test="guessed-word" key={ index }>
         <td>{ word.guessedWord }</td>
         <td>{ word.letterMatchCount }</td>
@@ -22,12 +23,12 @@ const GuessedWords = (props) => {
     ));
     contents = (
       <div data-test="guessed-words">
-        <h3>{ stringsModule.getStringByLanguage(language, 'guessedWords') }</h3>
+        <h3>{stringsModule.getStringByLanguage(language, 'guessedWords')}</h3>
         <table className="table table-sm">
           <thead className="thead-light">
             <tr>
-              <th>{ stringsModule.getStringByLanguage(language, 'guessColumnHeader') }</th>
-              <th>{ stringsModule.getStringByLanguage(language, 'matchingLettersColumnHeader') }</th>
+              <th>{stringsModule.getStringByLanguage(language, 'guessColumnHeader')}</th>
+              <th>{stringsModule.getStringByLanguage(language, 'matchingLettersColumnHeader')}</th>
             </tr>
           </thead>
           <tbody>
@@ -42,15 +43,6 @@ const GuessedWords = (props) => {
       { contents }
     </div>
   );
-};
-
-GuessedWords.propTypes = {
-  guessedWords: PropTypes.arrayOf(
-    PropTypes.shape({
-      guessedWord: PropTypes.string.isRequired,
-      letterMatchCount: PropTypes.number.isRequired,
-    })
-  ).isRequired,
 };
 
 export default GuessedWords;

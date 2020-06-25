@@ -29,7 +29,7 @@ function reducer(state, action) {
 }
 
 function App() {
-  const [state, dispatch] = React.useReducer(reducer, { secretWord: null, language: 'es' });
+  const [state, dispatch] = React.useReducer(reducer, { secretWord: null, language: 'en' });
 
   const setSecretWord = (secretWord) => {
     dispatch({ type: "setSecretWord", payload: secretWord });

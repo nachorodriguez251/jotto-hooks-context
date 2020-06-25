@@ -4,19 +4,23 @@ import { findByTestAttr, checkProps } from '../test/testUtils';
 import Input from './Input'
 
 import languageContext from './contexts/languageContext';
+import successContext from './contexts/successContext';
 import { findByDisplayValue } from '@testing-library/react';
 
 /**
  * Setup function for Input component
  * @returns { shallowWrapper }
  */
-const setup = ({ secretWord, language }) => {
+const setup = ({ secretWord, language, success }) => {
+  success = success || false;
   secretWord = secretWord || 'party';
   language = language || 'en';
 
   return mount(
     <languageContext.Provider value={language}>
-      <Input secretWord={secretWord} />
+      <successContext.SuccessProvider value={[success, jest.fn()]}>
+        <Input secretWord={secretWord} />
+      </successContext.SuccessProvider>
     </languageContext.Provider>
   );
 }
@@ -82,4 +86,9 @@ describe('state controlled input field', () => {
     submitButton.simulate("click", { preventDefault() {}});
     expect(mockSetCurrentGuess).toHaveBeenCalledWith("");
   })
-})
+});
+
+test('input component does not show when success is true', () => {
+  const wrapper = setup({ secretWord: 'party', success: true });
+  expect(wrapper.isEmptyRender()).toBe(true);
+});

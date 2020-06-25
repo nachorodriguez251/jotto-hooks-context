@@ -13,7 +13,7 @@ function Input({ secretWord }) {
   const language = React.useContext(languageConext);
   
   if (success) return null;
-  
+
   return (
     <div data-test="component-input">
       <form className="form-inline">
@@ -31,8 +31,13 @@ function Input({ secretWord }) {
           onClick={(evt) => { 
             evt.preventDefault();
             // TODO: update guessedWord
-            // TODO: check against secretWord and update success if needed
-            setCurrentGuess(currentGuess)}}>
+            // check against secretWord and update success if needed
+            if (secretWord === currentGuess) {
+              setSuccess(true);
+            }
+
+            // clear input box
+            setCurrentGuess("")}}>
            { stringsModule.getStringByLanguage(language, 'submit') }    
         </button>
       </form>
